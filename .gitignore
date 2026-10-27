@@ -1,0 +1,9 @@
+# Local secrets and machine-specific files
+.env
+.env.*
+!.env.example
+*.db
+.vercel/
+node_modules/
+Thumbs.db
+.DS_Store
