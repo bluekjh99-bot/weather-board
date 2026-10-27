@@ -14,13 +14,16 @@
 - **04 단원 변경** 외부 CDN은 supabase-js 하나만 허용한다.
   `<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>`
 - index.html 은 supabase-js → config.js → logic.js → app.js 순서로 불러온다.
+- **04 단원 변경** config.js 는 브라우저 공개용 Supabase 주소와 키 두 줄만 둔다. 비밀 키는 절대 넣지 않는다.
+- **04 단원 변경** api/kma.js 는 KMA_KEY 환경변수와 config.js 의 공개용 키로 날씨·지역 일정을 조회하고 판단을 반환한다. service_role 키는 쓰지 않는다.
 
 ## 폴더 구조
 - index.html : 화면 구조
 - style.css  : 디자인
 - **04 단원 변경** config.js : Supabase 주소와 공개용 키 두 줄만 둔다
 - logic.js   : 판단 규칙 · API 주소(weatherUrl) · 응답 해석(toWeather) · md 만들기(toMarkdown)
-- app.js     : 화면 동작. **04 단원 변경** DB 호출은 '저장 위치' 구역의 checkConfig · loadData · insertTask 안에서만
+- app.js     : 화면 동작. **04 단원 변경** 브라우저 DB 호출은 '저장 위치' 구역의 checkConfig · loadData · insertTask 안에서만
+- **04 단원 변경** api/kma.js : 지역 일정 · 오늘 날씨 · 일정별 판단을 반환하는 Vercel 서버 함수
 - **04 단원 변경** setup.sql : 표 · 규칙 · 권한(RLS). DB 규칙을 바꾸면 이 파일도 고친다
 
 ## 작업 방식
@@ -34,5 +37,6 @@
 - 가상 데이터만 사용한다. 실제 이름 · 연락처 · 기관 내부 자료를 넣지 않는다.
 - 사용자가 입력한 글자는 textContent 로 표시한다.
 - **04 단원 변경** 화면 코드에는 공개용 키(Publishable 또는 anon)만 쓴다. 비밀 키(Secret 또는 service_role)는 절대 코드 · 채팅 · GitHub 에 넣지 않는다.
+- **04 단원 변경** KMA_KEY 는 Vercel 환경변수에서만 읽는다. Supabase 조회는 공개용 키와 RLS로 제한한다.
 - **04 단원 변경** 표 이름은 wx_ 로 시작한다. 규칙(구분 · 지역 값)은 화면에서만 막지 않고 setup.sql 에서도 막는다.
 - 날짜는 YYYY-MM-DD 로 만들고 toISOString() 을 쓰지 않는다. (한국 시간에서 하루가 밀림)
