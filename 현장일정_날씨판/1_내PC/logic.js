@@ -3,6 +3,34 @@
 // 교육용 가상 기준 (실제 작업 중지 · 행사 취소 기준은 각 기관 규정을 따름)
 const RULES = { wind: 10, rain: 60, heat: 33 };
 
+const REGIONS = {
+  '세종': { lat: 36.48, lon: 127.29 },
+  '대전': { lat: 36.35, lon: 127.38 },
+  '태안': { lat: 36.75, lon: 126.30 },
+  '보령': { lat: 36.33, lon: 126.61 },
+};
+
+function weatherUrl(region) {
+  const p = REGIONS[region];
+  return 'https://api.open-meteo.com/v1/forecast'
+    + '?latitude=' + p.lat + '&longitude=' + p.lon
+    + '&daily=temperature_2m_max,wind_speed_10m_max,precipitation_probability_max'
+    + '&timezone=Asia%2FSeoul&wind_speed_unit=ms&forecast_days=1';
+}
+
+function toWeather(json) {
+  return {
+    tempMax: json.daily.temperature_2m_max[0],
+    windMax: json.daily.wind_speed_10m_max[0],
+    rainProb: json.daily.precipitation_probability_max[0],
+  };
+}
+
+function applyTest(w, test) {
+  if (!w || test !== 'wind') return w;
+  return Object.assign({}, w, { windMax: 12 });
+}
+
 // 일정 구분과 날씨로 판단 (w가 없으면 '날씨 확인 전')
 function judge(kind, w) {
   if (!w) return { level: 'none', text: '날씨 확인 전' };
@@ -13,4 +41,4 @@ function judge(kind, w) {
   return { level: 'ok', text: '진행' };
 }
 
-if (typeof module !== 'undefined') module.exports = { RULES, judge };
+if (typeof module !== 'undefined') module.exports = { RULES, REGIONS, weatherUrl, toWeather, applyTest, judge };
